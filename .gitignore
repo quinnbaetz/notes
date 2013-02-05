@@ -1,0 +1,19 @@
+*\.py[co]
+
+# Editors
+*~
+*\.swp
+*\.swo
+
+# Packages
+*.egg
+*.egg-info
+build
+dist
+sdist
+virtualenv/
+
+# Misc
+.ropeproject/
+.DS_Store
+.sass-cache/

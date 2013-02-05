@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Hello {{options.app_name}}</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    {% if env in options.local_envs %}
+      <link rel="stylesheet" href="/client/main.scss" />
+      <!--[if IE 9]>
+          <link rel="stylesheet" href="/client/ie9.scss">
+      <![endif]-->
+      <!--[if lt IE 9]>
+          <link rel="stylesheet" href="/client/ie8.scss">
+      <![endif]-->
+    {% else %}
+      <link rel="stylesheet" href="{{static_url("main.min.css")}}" />
+      <!--[if IE 9]>
+          <link rel="stylesheet" href="{{static_url("ie9.css")}}">
+      <![endif]-->
+      <!--[if lt IE 9]>
+          <link rel="stylesheet" href="{{static_url("ie8.css")}}">
+      <![endif]-->
+    {% end %}
+    <link rel="stylesheet" href="/static/ie_test.css"/>
+    <!--[if lt IE 9]>
+        <script src="{{static_url("html5shiv.min.js")}}"></script>
+        <script src="{{static_url("respond.min.js")}}"></script>
+    <![endif]-->
+    {% if env in options.local_envs %}
+      <script src="/client/main.js"></script>
+    {% else %}
+      <script src="{{static_url("main.min.js")}}"></script>
+    {% end %}
+  </head>
+  <body>
+    <h1>Hello notes</h1>
+    <article>
+      <p>This text should be red on a wide screen and blue on a narrow one.</p>
+    </article>
+  </body>
+</html>

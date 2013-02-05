@@ -1,0 +1,91 @@
+upstream notes_dev_tornados {
+   server 127.0.0.1:8104 max_fails=3 fail_timeout=10s;
+}
+server {
+  listen 80;
+  server_name notes.dev.monkeyinferno.com;
+  set $app_root /srv/www/notes/active/notes/notes;
+  #access_log syslog:notice monkey;
+  #access_log /var/log/nginx/notes.access.log main;
+  error_page 404 501 /notfound.html;
+  error_page 500 /error.html;
+  error_page 502 503 504 /maintenance.html;
+
+  keepalive_timeout  60;
+  proxy_intercept_errors  on;
+  proxy_buffer_size  8k;
+  proxy_buffers  32 32k;
+  proxy_busy_buffers_size  64k;
+  proxy_temp_file_write_size  64k;
+# set by LB proxy_set_header Scheme  $scheme;
+  set_real_ip_from 10.33.0.7;
+  proxy_set_header X-Real-IP  $remote_addr;
+  proxy_set_header Host  $host;
+  proxy_read_timeout  8;
+  proxy_connect_timeout  8;
+  proxy_next_upstream error timeout;
+
+  location /active {
+    proxy_pass http://notes_dev_tornados;
+    add_header Cache-Control "no-cache";
+    add_header Pragma "no-cache";
+    add_header Expires "Sat, 10 Jun 2006 03:08:13 GMT";
+  }
+
+  location /static/ {
+    root $app_root/;
+    if ($query_string) { expires 8d; }
+  }
+
+  location / {
+    proxy_pass http://notes_dev_tornados;
+    client_max_body_size    3m;
+    client_body_buffer_size 128k;
+  }
+}
+
+upstream notes_tornados {
+   server 127.0.0.1:8104 max_fails=3 fail_timeout=10s;
+}
+server {
+  listen 80;
+  server_name notes.monkeyinferno.com;
+  set $app_root /srv/www/notes/active/notes/notes;
+  #access_log syslog:notice monkey;
+  #access_log /var/log/nginx/notes.access.log main;
+  error_page 404 501 /notfound.html;
+  error_page 500 /error.html;
+  error_page 502 503 504 /maintenance.html;
+
+  keepalive_timeout  60;
+  proxy_intercept_errors  on;
+  proxy_buffer_size  8k;
+  proxy_buffers  32 32k;
+  proxy_busy_buffers_size  64k;
+  proxy_temp_file_write_size  64k;
+# set by LB proxy_set_header Scheme  $scheme;
+  set_real_ip_from 10.33.0.7;
+  proxy_set_header X-Real-IP  $remote_addr;
+  proxy_set_header Host  $host;
+  proxy_read_timeout  8;
+  proxy_connect_timeout  8;
+  proxy_next_upstream error timeout;
+
+  location /active {
+    proxy_pass http://notes_tornados;
+    add_header Cache-Control "no-cache";
+    add_header Pragma "no-cache";
+    add_header Expires "Sat, 10 Jun 2006 03:08:13 GMT";
+  }
+
+  location /static/ {
+    root $app_root/;
+    if ($query_string) { expires 8d; }
+  }
+
+  location / {
+    proxy_pass http://notes_tornados;
+    client_max_body_size    3m;
+    client_body_buffer_size 128k;
+  }
+}

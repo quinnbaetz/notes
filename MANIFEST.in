@@ -1,0 +1,3 @@
+include notes/sql/*
+include notes/static/*
+include notes/templates/*
